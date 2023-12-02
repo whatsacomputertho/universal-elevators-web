@@ -1,0 +1,23 @@
+{
+  "name": "universal-elevators",
+  "version": "0.1.0",
+  "description": "A browser-native elevator simulation game, based on the elevate-lib Rust package",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whatsacomputertho/universal-elevators-web.git"
+  },
+  "author": "whatsacomputertho",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/whatsacomputertho/universal-elevators-web/issues"
+  },
+  "homepage": "https://github.com/whatsacomputertho/universal-elevators-web#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

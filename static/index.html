@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Elevators</title>
+</head>
+<body>
+    <h1>Universal Elevators</h1>
+</body>
+<script>
+    const importObject = { 
+        imports: {}
+    };
+
+    WebAssembly.instantiateStreaming(fetch("bin/universal_elevators_plugin_bg.wasm"), importObject).then(
+        (obj) => console.log(obj.instance.exports.add(1, 2))
+    );
+</script>
+</html>
