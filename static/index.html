@@ -14,7 +14,18 @@
     };
 
     WebAssembly.instantiateStreaming(fetch("bin/universal_elevators_plugin_bg.wasm"), importObject).then(
-        (obj) => console.log(obj.instance.exports.add(1, 2))
+        (obj) => {
+            let mem = obj.instance.exports.memory
+            const strPtr = obj.instance.exports.get_game_name()
+            const strLen = obj.instance.exports.get_game_name_len()
+            const arrayBuffer = mem.buffer
+            const buffer = new Uint8Array(arrayBuffer)
+            let myStr = "";
+            for (let i = strPtr; i < strPtr + strLen; ++i) {
+                myStr += String.fromCharCode(buffer[i])
+            }
+            console.log(myStr)
+        }
     );
 </script>
 </html>
