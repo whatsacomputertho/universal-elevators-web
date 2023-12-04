@@ -4,16 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universal Elevators</title>
+    <link rel="stylesheet" href="/css/elevator-game.css">
 </head>
 <body>
-    <h1>Universal Elevators</h1>
+    <div id="universal-elevators-wrapper" class="universal-elevators__universal-elevators-wrapper">
+    </div>
 </body>
 <script type="module">
     import init, { update_game_state, get_game_state } from "./pkg/universal_elevators_plugin.js"
     await init()
-    for(var i = 0; i < 10; i++) {
-        console.log(get_game_state());
-        update_game_state();
+
+    function sleep(ms)
+    {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    function displayGameState(gameState)
+    {
+        //Get the universal elevators wrapper and clear it
+        var wrapper = document.getElementById("universal-elevators-wrapper");
+        while(wrapper.lastChild)
+        {
+            wrapper.removeChild(wrapper.lastChild);
+        }
+
+        //Append a new table based on the number of elevators and floors
+        var gameStateTable = document.createElement("table");
+        for (var i = gameState['floors'].length - 1; i >= 0; i--)
+        {
+            //Create a row for this floor
+            var floorRow = document.createElement("tr");
+            gameStateTable.appendChild(floorRow);
+
+            //Create a column for the floor
+            var floorColumn = document.createElement("td");
+            floorColumn.innerHTML = gameState['floors'][i]['num_people'];
+            if(gameState['floors'][i]['are_people_waiting']) {
+                floorColumn.setAttribute('class', 'waiting-floor')
+            } else {
+                floorColumn.setAttribute('class', 'floor')
+            }
+            floorRow.appendChild(floorColumn);
+
+            //Create columns for the elevators
+            for (var j = gameState['elevators'].length - 1; j >= 0; j--)
+            {
+                var elevatorColumn = document.createElement("td");
+                if (gameState['elevators'][j]['floor_on'] !== i) {
+                    elevatorColumn.innerHtml = ""
+                } else {
+                    elevatorColumn.innerHTML = gameState['elevators'][j]['num_people'];
+                    elevatorColumn.setAttribute('class', 'elevator')
+                }
+                floorRow.appendChild(elevatorColumn);
+            }
+        }
+        wrapper.appendChild(gameStateTable);
+
+        //Append the text describing the average wait time and energy
+        var waitTimeText = document.createElement("p");
+        waitTimeText.innerHTML = "Avg. Wait Time: " + gameState['avg_wait_time'].toFixed(2);
+        wrapper.appendChild(waitTimeText);
+        var energyText = document.createElement("p");
+        energyText.innerHTML = "Avg. Energy Spent: " + gameState['avg_energy_spent'].toFixed(2);
+        wrapper.appendChild(energyText);
+    }
+
+    async function start()
+    {
+        for (var i = 0; i < 1000; i++) {
+            displayGameState(JSON.parse(get_game_state()));
+            update_game_state();
+            await sleep(100);
+        }
+    }
+
+    start();
 </script>
 </html>
