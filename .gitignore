@@ -1,4 +1,4 @@
 static/bin
 node_modules
 package-lock.json
-static/wasm
+static/pkg

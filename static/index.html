@@ -8,24 +8,12 @@
 <body>
     <h1>Universal Elevators</h1>
 </body>
-<script>
-    const importObject = { 
-        imports: {}
-    };
-
-    WebAssembly.instantiateStreaming(fetch("bin/universal_elevators_plugin_bg.wasm"), importObject).then(
-        (obj) => {
-            let mem = obj.instance.exports.memory
-            const strPtr = obj.instance.exports.get_game_name()
-            const strLen = obj.instance.exports.get_game_name_len()
-            const arrayBuffer = mem.buffer
-            const buffer = new Uint8Array(arrayBuffer)
-            let myStr = "";
-            for (let i = strPtr; i < strPtr + strLen; ++i) {
-                myStr += String.fromCharCode(buffer[i])
-            }
-            console.log(myStr)
-        }
-    );
+<script type="module">
+    import init, { update_game_state, get_game_state } from "./pkg/universal_elevators_plugin.js"
+    await init()
+    for(var i = 0; i < 10; i++) {
+        console.log(get_game_state());
+        update_game_state();
+    }
 </script>
 </html>
