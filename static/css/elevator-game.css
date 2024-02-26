@@ -1,8 +1,60 @@
+body {
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+}
+
+#universal-elevators-controls {
+    display: flex;
+    width: 40vw;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    flex-direction: column;
+}
+
+.universal-elevators__control {
+    width: 100%;
+    padding: 20px;
+}
+
+#universal-elevators-wrapper {
+    width: 50vw;
+    height: 90vh;
+    overflow: scroll;
+}
+
+.universal-elevators-header {
+    position: -webkit-sticky;
+    position: sticky;
+    display: inline-block;
+    text-align: right;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-family: monospace;
+}
+
+.universal-elevators-tips-wrapper {
+    float: left;
+}
+
+.universal-elevators-text-wrapper {
+    float: right;
+}
+
+.universal-elevators-text {
+    color: white;
+}
+
 .floor, .waiting-floor, .elevator {
-    border: 1px solid;
+    border: 1px solid white;
+    padding: 10px;
+    color: white;
+    font-family: monospace;
 }
 
 .waiting-floor {
-    border-color: darkgoldenrod;
-    color: darkgoldenrod;
+    border-color: gold;
+    color: gold;
 }
