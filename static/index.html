@@ -9,10 +9,46 @@
 <body>
     <div id="universal-elevators-wrapper" class="universal-elevators__universal-elevators-wrapper">
     </div>
+    <div id="universal-elevators-controls" class="universal-elevators__universal-elevators-controls">
+        <button id="control-collect-tips" class="universal-elevators__control">Collect Tips</button>
+        <button id="control-append-floor" class="universal-elevators__control">Append Floor</button>
+        <button id="control-append-elevator" class="universal-elevators__control">Append Elevator</button>
+    </div>
 </body>
 <script type="module">
     import init, { update_game_state, get_game_state } from "./pkg/universal_elevators_plugin.js"
     await init()
+
+    //Used for formatting tips as currency
+    const MoneyFormat = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
+
+    const inputObjectTemplate = {
+        "collect_tips" : false,
+        "append_floor" : false,
+        "append_elevator" : false
+    }
+
+    var inputObject = {
+        "collect_tips" : false,
+        "append_floor" : false,
+        "append_elevator" : false
+    }
+    
+    document.getElementById("control-collect-tips").addEventListener('click', function(){
+        inputObject["collect_tips"] = true;
+        this.disabled = true;
+    })
+    document.getElementById("control-append-floor").addEventListener('click', function(){
+        inputObject["append_floor"] = true;
+        this.disabled = true;
+    })
+    document.getElementById("control-append-elevator").addEventListener('click', function(){
+        inputObject["append_elevator"] = true;
+        this.disabled = true;
+    })
 
     function sleep(ms)
     {
@@ -27,6 +63,41 @@
         {
             wrapper.removeChild(wrapper.lastChild);
         }
+
+        //Create the header for the elevator game display
+        var elevatorHeader = document.createElement("div");
+        elevatorHeader.setAttribute("class", "universal-elevators-header");
+        wrapper.appendChild(elevatorHeader);
+
+        //Append the text describing the number of tips
+        var tipsWrapper = document.createElement("div");
+        tipsWrapper.setAttribute("class", "universal-elevators-tips-wrapper")
+        var tipsHeaderText = document.createElement("p");
+        tipsHeaderText.setAttribute("class", "universal-elevators-text");
+        tipsHeaderText.innerHTML = "Total Tips";
+        tipsWrapper.appendChild(tipsHeaderText);
+        var tipsText = document.createElement("h3");
+        tipsText.setAttribute("class", "universal-elevators-text");
+        tipsText.innerHTML = MoneyFormat.format(gameState['collected_tips']);
+        tipsWrapper.appendChild(tipsText);
+        elevatorHeader.appendChild(tipsWrapper);
+
+        //Append the text describing the average wait time and energy
+        var textWrapper = document.createElement("div");
+        textWrapper.setAttribute("class", "universal-elevators-text-wrapper");
+        var buildingTipsText = document.createElement("p");
+        buildingTipsText.setAttribute("class", "universal-elevators-text");
+        buildingTipsText.innerHTML = "Building Tips: " + MoneyFormat.format(gameState['building_tips']);
+        textWrapper.appendChild(buildingTipsText);
+        var waitTimeText = document.createElement("p");
+        waitTimeText.setAttribute("class", "universal-elevators-text");
+        waitTimeText.innerHTML = "Avg. Wait Time: " + gameState['avg_wait_time'].toFixed(2);
+        textWrapper.appendChild(waitTimeText);
+        var energyText = document.createElement("p");
+        energyText.setAttribute("class", "universal-elevators-text");
+        energyText.innerHTML = "Avg. Energy Spent: " + gameState['avg_energy_spent'].toFixed(2);
+        textWrapper.appendChild(energyText);
+        elevatorHeader.appendChild(textWrapper);
 
         //Append a new table based on the number of elevators and floors
         var gameStateTable = document.createElement("table");
@@ -60,22 +131,24 @@
             }
         }
         wrapper.appendChild(gameStateTable);
+    }
 
-        //Append the text describing the average wait time and energy
-        var waitTimeText = document.createElement("p");
-        waitTimeText.innerHTML = "Avg. Wait Time: " + gameState['avg_wait_time'].toFixed(2);
-        wrapper.appendChild(waitTimeText);
-        var energyText = document.createElement("p");
-        energyText.innerHTML = "Avg. Energy Spent: " + gameState['avg_energy_spent'].toFixed(2);
-        wrapper.appendChild(energyText);
+    function resetInput() {
+        var inputObjectReset = JSON.parse(JSON.stringify(inputObjectTemplate));
+        inputObject = inputObjectReset;
+
+        document.getElementById("control-collect-tips").disabled = false;
+        document.getElementById("control-append-floor").disabled = false;
+        document.getElementById("control-append-elevator").disabled = false;
     }
 
     async function start()
     {
-        for (var i = 0; i < 1000; i++) {
+        while(true) {
             displayGameState(JSON.parse(get_game_state()));
-            update_game_state();
             await sleep(100);
+            update_game_state(JSON.stringify(inputObject));
+            resetInput();
         }
     }
 
