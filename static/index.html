@@ -13,6 +13,8 @@
         <button id="control-collect-tips" class="universal-elevators__control">Collect Tips</button>
         <button id="control-append-floor" class="universal-elevators__control">Append Floor</button>
         <button id="control-append-elevator" class="universal-elevators__control">Append Elevator</button>
+        <button id="control-add-floor-capacity" class="universal-elevators__control">Add Floor Capacity</button>
+        <button id="control-add-elevator-capacity" class="universal-elevators__control">Add Elevator Capacity</button>
     </div>
 </body>
 <script type="module">
@@ -28,13 +30,17 @@
     const inputObjectTemplate = {
         "collect_tips" : false,
         "append_floor" : false,
-        "append_elevator" : false
+        "append_elevator" : false,
+        "add_floor_capacity" : false,
+        "add_elevator_capacity" : false
     }
 
     var inputObject = {
         "collect_tips" : false,
         "append_floor" : false,
-        "append_elevator" : false
+        "append_elevator" : false,
+        "add_floor_capacity" : false,
+        "add_elevator_capacity" : false
     }
     
     document.getElementById("control-collect-tips").addEventListener('click', function(){
@@ -47,6 +53,14 @@
     })
     document.getElementById("control-append-elevator").addEventListener('click', function(){
         inputObject["append_elevator"] = true;
+        this.disabled = true;
+    })
+    document.getElementById("control-add-floor-capacity").addEventListener('click', function(){
+        inputObject["add_floor_capacity"] = true;
+        this.disabled = true;
+    })
+    document.getElementById("control-add-elevator-capacity").addEventListener('click', function(){
+        inputObject["add_elevator_capacity"] = true;
         this.disabled = true;
     })
 
@@ -109,7 +123,7 @@
 
             //Create a column for the floor
             var floorColumn = document.createElement("td");
-            floorColumn.innerHTML = gameState['floors'][i]['num_people'];
+            floorColumn.innerHTML = gameState['floors'][i]['num_people'] + " / " + gameState['floors'][i]['capacity'];
             if(gameState['floors'][i]['are_people_waiting']) {
                 floorColumn.setAttribute('class', 'waiting-floor')
             } else {
@@ -124,7 +138,7 @@
                 if (gameState['elevators'][j]['floor_on'] !== i) {
                     elevatorColumn.innerHtml = ""
                 } else {
-                    elevatorColumn.innerHTML = gameState['elevators'][j]['num_people'];
+                    elevatorColumn.innerHTML = gameState['elevators'][j]['num_people'] + " / " + gameState['elevators'][j]['capacity'];
                     elevatorColumn.setAttribute('class', 'elevator')
                 }
                 floorRow.appendChild(elevatorColumn);
@@ -140,6 +154,8 @@
         document.getElementById("control-collect-tips").disabled = false;
         document.getElementById("control-append-floor").disabled = false;
         document.getElementById("control-append-elevator").disabled = false;
+        document.getElementById("control-add-floor-capacity").disabled = false;
+        document.getElementById("control-add-elevator-capacity").disabled = false;
     }
 
     async function start()
